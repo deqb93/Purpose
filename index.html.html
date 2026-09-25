@@ -3,99 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ikigai Lab - Descubre tu Propósito</title>
+    <title>Ikigai Lab - Test de Propósito</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { background-color: #0F172A; color: #F8FAFC; font-family: 'Inter', sans-serif; }
-        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-primary { background: #10B981; color: white; transition: all 0.3s ease; }
-        .btn-primary:hover { background: #059669; transform: translateY(-2px); }
-        .option-card { cursor: pointer; transition: all 0.2s ease; }
-        .option-card.selected { border-color: #10B981; background: rgba(16, 185, 129, 0.1); }
-        .hidden { display: none !important; }
-    </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
+<body class="bg-gray-900 text-white font-sans min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- PANTALLA DE INICIO -->
-    <div id="screen-start" class="max-w-3xl text-center space-y-8 fade-in">
-        <div class="inline-block px-4 py-1 rounded-full bg-emerald-900/50 text-emerald-400 text-sm font-semibold mb-4 border border-emerald-800">
-            🌱 IKIGAI LAB
-        </div>
-        <h1 class="text-4xl md:text-6xl font-bold tracking-tight">
-            Descubre a qué dedicarte y encuentra tu <span class="text-emerald-400">Propósito de Vida</span>
-        </h1>
-        <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
-            Combina la sabiduría del Ikigai para identificar tus talentos naturales y las causas que te mueven.
-        </p>
-        <button onclick="startTest()" class="btn-primary px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-emerald-500/20">
-            Iniciar Test Gratuito →
+    <!-- PANTALLA INICIAL -->
+    <div id="welcome-screen" class="max-w-2xl text-center space-y-6">
+        <div class="text-teal-400 font-bold tracking-widest text-sm mb-2">IKIGAI LAB</div>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white leading-tight">Descubre a qué dedicarte y encuentra tu <span class="text-teal-400">Propósito de Vida</span></h1>
+        <p class="text-gray-400 text-lg mb-8">Combina la sabiduría del Ikigai, el Dharma y la Logoterapia para identificar tus talentos naturales y tu modelo de trabajo ideal.</p>
+        <button onclick="startTest()" class="bg-teal-500 hover:bg-teal-400 text-gray-900 font-bold py-3 px-8 rounded-lg text-lg transition shadow-lg shadow-teal-500/30">
+            Iniciar Test Gratuito ➔
         </button>
     </div>
 
-    <!-- PANTALLA DEL TEST -->
-    <div id="screen-test" class="hidden w-full max-w-4xl space-y-8">
-        <!-- Progress Bar -->
-        <div class="w-full bg-slate-800 rounded-full h-2">
-            <div id="progress-bar" class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width: 25%"></div>
+    <!-- CONTENEDOR DEL TEST -->
+    <div id="test-container" class="hidden w-full max-w-4xl bg-gray-800 rounded-xl p-6 md:p-10 shadow-2xl">
+        <div class="mb-6 flex justify-between items-center border-b border-gray-700 pb-4">
+            <h2 id="step-title" class="text-2xl font-bold text-teal-400">Fase 1: Talentos</h2>
+            <span id="step-counter" class="text-gray-400 text-sm font-mono">Paso 1 de 2</span>
         </div>
         
-        <div class="text-center space-y-2">
-            <h2 id="phase-title" class="text-3xl font-bold text-emerald-400">Tus Talentos</h2>
-            <p id="phase-desc" class="text-slate-400">Selecciona hasta 3 opciones que se te den bien sin esforzarte mucho.</p>
-        </div>
-
-        <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Las opciones se generan con JS -->
-        </div>
-
-        <div class="flex justify-between mt-8">
-            <button onclick="prevPhase()" id="btn-prev" class="px-6 py-3 rounded-lg font-semibold text-slate-300 hover:bg-slate-800 hidden">
-                ← Volver
-            </button>
-            <button onclick="nextPhase()" id="btn-next" class="btn-primary px-8 py-3 rounded-lg font-bold ml-auto opacity-50 cursor-not-allowed" disabled>
-                Siguiente →
+        <p id="step-instruction" class="text-gray-300 mb-6">Selecciona hasta 3 opciones en las que sientes que destacas naturalmente:</p>
+        
+        <!-- Grid de Opciones -->
+        <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"></div>
+        
+        <div class="flex justify-end">
+            <button onclick="nextStep()" class="bg-teal-500 hover:bg-teal-400 text-gray-900 font-bold py-2 px-6 rounded text-md transition">
+                Siguiente ➔
             </button>
         </div>
     </div>
 
-    <!-- PANTALLA DE CAPTURA DE CORREO -->
-    <div id="screen-email" class="hidden w-full max-w-md mx-auto glass-card p-8 rounded-2xl text-center space-y-6">
-        <h2 class="text-2xl font-bold">¡Test Completado! 🎉</h2>
-        <p class="text-slate-300 text-sm">Ingresa tu correo para guardar tus respuestas, ver tu perfil recomendado y enviarte tu diagnóstico completo.</p>
-        <input type="email" id="user-email" placeholder="tu@correo.com" class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-emerald-500">
-        <button onclick="submitResults()" id="btn-submit" class="btn-primary w-full py-3 rounded-lg font-bold">
-            Ver mis resultados
+    <!-- PANTALLA DE RESULTADOS (CAPTURA DE EMAIL) -->
+    <div id="email-screen" class="hidden max-w-md w-full bg-gray-800 rounded-xl p-8 text-center shadow-2xl">
+        <h2 class="text-2xl font-bold text-white mb-4">¡Test Completado!</h2>
+        <p class="text-gray-400 mb-6">Ingresa tu correo para guardar tus respuestas y desbloquear tu diagnóstico de propósito.</p>
+        <input type="email" id="user-email" placeholder="tu-correo@ejemplo.com" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 mb-4 focus:outline-none focus:border-teal-400">
+        <button onclick="submitTest()" id="submit-btn" class="w-full bg-teal-500 hover:bg-teal-400 text-gray-900 font-bold py-3 px-8 rounded-lg transition">
+            Ver mi Diagnóstico
         </button>
     </div>
 
-    <!-- PANTALLA DE RESULTADOS -->
-    <div id="screen-results" class="hidden w-full max-w-3xl glass-card p-8 rounded-2xl space-y-8">
-        <div class="text-center space-y-2 border-b border-slate-700 pb-6">
-            <div class="inline-flex items-center gap-2 text-emerald-400 font-bold bg-emerald-900/30 px-4 py-2 rounded-full mb-4">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                ¡Diagnóstico Generado Exitosamente!
-            </div>
-            <p class="text-xs text-slate-400 uppercase tracking-widest">Tu Perfil Recomendado</p>
-            <h2 id="result-profile" class="text-3xl md:text-4xl font-black text-white">CARGANDO...</h2>
-            <p id="result-desc" class="text-slate-300 mt-4">Analizando tus respuestas...</p>
+    <!-- PANTALLA DE DIAGNÓSTICO FINAL -->
+    <div id="result-screen" class="hidden w-full max-w-3xl bg-gray-800 rounded-xl p-8 shadow-2xl border border-gray-700">
+        <div class="flex items-center gap-2 mb-4 text-teal-400">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span class="font-bold tracking-wider text-sm">DIAGNÓSTICO DESBLOQUEADO</span>
         </div>
-        <div class="text-center pt-4">
-            <p class="text-slate-400 text-sm mb-4">Estamos preparando la descarga de tu reporte en PDF.</p>
-            <button onclick="location.reload()" class="text-emerald-400 hover:text-emerald-300 font-medium text-sm underline underline-offset-4">
-                Realizar la prueba de nuevo
-            </button>
+        <h2 id="profile-title" class="text-3xl font-extrabold text-white mb-2 uppercase"></h2>
+        <p id="profile-desc" class="text-gray-400 mb-8"></p>
+        
+        <div class="bg-gray-900/50 p-4 rounded-lg border border-teal-500/20 text-center text-teal-300 text-sm">
+            Tus datos se registraron correctamente. Próximamente habilitaremos la descarga en PDF.
         </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN DE SUPABASE (Reemplaza con tus datos reales)
-        const SUPABASE_URL = 'TU_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'TU_SUPABASE_ANON_KEY';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // CREDENCIALES REALES
+        const SUPABASE_URL = 'https://uvmfiqohlwafjktzntaa.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_oGvNY6eL6bMado-D7jAyTw_6m3FLJOm';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // DATOS DEL TEST ACTUALIZADOS
+        // DATOS
         const talentsData = [
             { id: 't1', title: 'Enseñar y guiar a otros', desc: 'Tienes paciencia infinita y disfrutas ver cómo la gente aprende algo nuevo gracias a ti.' },
             { id: 't2', title: 'Moverte y hacer deporte', desc: 'Tienes mucha energía física, se te dan bien los deportes, el baile o actividades de destreza.' },
@@ -124,143 +97,98 @@
             { id: 'c4', title: 'Las cosas ineficientes o injustas', desc: 'Te frustran los problemas sin resolver y quieres crear soluciones o negocios que faciliten la vida.' }
         ];
 
-        // Fases del test
-        const phases = [
-            { title: "Tus Talentos", desc: "Selecciona hasta 3 opciones que se te den bien sin esforzarte mucho.", data: talentsData, max: 3, key: 'talents' },
-            { title: "Tus Causas", desc: "Selecciona hasta 2 problemas que más te frustren o te muevan a actuar.", data: causesData, max: 2, key: 'causes' }
-            // Puedes agregar más fases aquí si tenías (ej: Pasiones, Modelos de Trabajo)
-        ];
+        // ESTADO DE LA APP
+        let currentStep = 1;
+        let selections = { talents: [], causes: [] };
 
-        let currentPhase = 0;
-        let userSelections = { talents: [], causes: [] };
-
+        // LÓGICA DE INTERFAZ
         function startTest() {
-            document.getElementById('screen-start').classList.add('hidden');
-            document.getElementById('screen-test').classList.remove('hidden');
-            renderPhase();
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('test-container').classList.remove('hidden');
+            renderStep();
         }
 
-        function renderPhase() {
-            const phase = phases[currentPhase];
-            document.getElementById('phase-title').innerText = phase.title;
-            document.getElementById('phase-desc').innerText = phase.desc;
-            
-            const progress = ((currentPhase + 1) / (phases.length + 1)) * 100;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
-
+        function renderStep() {
             const grid = document.getElementById('options-grid');
             grid.innerHTML = '';
-
-            phase.data.forEach(item => {
-                const isSelected = userSelections[phase.key].includes(item.title);
+            
+            let data = currentStep === 1 ? talentsData : causesData;
+            let currentSelections = currentStep === 1 ? selections.talents : selections.causes;
+            
+            document.getElementById('step-title').innerText = currentStep === 1 ? 'Fase 1: Tus Talentos' : 'Fase 2: Tus Causas';
+            document.getElementById('step-counter').innerText = `Paso ${currentStep} de 2`;
+            
+            data.forEach(item => {
+                const isSelected = currentSelections.includes(item.id);
                 const card = document.createElement('div');
-                card.className = `option-card glass-card p-5 rounded-xl border border-slate-700 hover:border-emerald-500 ${isSelected ? 'selected' : ''}`;
-                card.onclick = () => toggleSelection(item.title, card);
-                card.innerHTML = `
-                    <h3 class="font-bold text-white mb-2">${item.title}</h3>
-                    <p class="text-sm text-slate-400">${item.desc}</p>
-                `;
+                card.className = `p-4 rounded-lg cursor-pointer border-2 transition ${isSelected ? 'border-teal-400 bg-teal-900/30' : 'border-gray-700 bg-gray-800 hover:border-gray-500'}`;
+                card.onclick = () => toggleSelection(item.id);
+                card.innerHTML = `<h3 class="font-bold text-white mb-1">${item.title}</h3><p class="text-xs text-gray-400 leading-relaxed">${item.desc}</p>`;
                 grid.appendChild(card);
             });
-
-            document.getElementById('btn-prev').classList.toggle('hidden', currentPhase === 0);
-            validateNextButton();
         }
 
-        function toggleSelection(title, cardElement) {
-            const phase = phases[currentPhase];
-            const selectedArray = userSelections[phase.key];
-            const index = selectedArray.indexOf(title);
-
-            if (index > -1) {
-                selectedArray.splice(index, 1);
-                cardElement.classList.remove('selected');
+        function toggleSelection(id) {
+            let currentSelections = currentStep === 1 ? selections.talents : selections.causes;
+            if (currentSelections.includes(id)) {
+                currentSelections.splice(currentSelections.indexOf(id), 1);
             } else {
-                if (selectedArray.length < phase.max) {
-                    selectedArray.push(title);
-                    cardElement.classList.add('selected');
-                } else {
-                    alert(`Solo puedes seleccionar hasta ${phase.max} opciones en esta fase.`);
-                }
+                if (currentSelections.length < 3) currentSelections.push(id);
+                else alert("Solo puedes seleccionar un máximo de 3 opciones.");
             }
-            validateNextButton();
+            renderStep();
         }
 
-        function validateNextButton() {
-            const btn = document.getElementById('btn-next');
-            const phase = phases[currentPhase];
-            const hasSelections = userSelections[phase.key].length > 0;
+        function nextStep() {
+            let currentSelections = currentStep === 1 ? selections.talents : selections.causes;
+            if (currentSelections.length === 0) {
+                alert("Por favor selecciona al menos una opción antes de avanzar.");
+                return;
+            }
             
-            if (hasSelections) {
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                btn.disabled = false;
+            if (currentStep === 1) {
+                currentStep = 2;
+                renderStep();
             } else {
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-                btn.disabled = true;
+                document.getElementById('test-container').classList.add('hidden');
+                document.getElementById('email-screen').classList.remove('hidden');
             }
         }
 
-        function nextPhase() {
-            if (currentPhase < phases.length - 1) {
-                currentPhase++;
-                renderPhase();
-            } else {
-                document.getElementById('screen-test').classList.add('hidden');
-                document.getElementById('screen-email').classList.remove('hidden');
-            }
-        }
-
-        function prevPhase() {
-            if (currentPhase > 0) {
-                currentPhase--;
-                renderPhase();
-            }
-        }
-
-        async function submitResults() {
+        // LÓGICA DE SUPABASE Y RESULTADOS
+        async function submitTest() {
             const email = document.getElementById('user-email').value;
             if (!email || !email.includes('@')) {
-                alert('Por favor, ingresa un correo válido.');
+                alert('Por favor ingresa un correo válido.');
                 return;
             }
 
-            const btn = document.getElementById('btn-submit');
-            btn.innerText = 'Guardando...';
-            btn.disabled = true;
+            document.getElementById('submit-btn').innerText = 'Procesando...';
+            document.getElementById('submit-btn').disabled = true;
 
-            // Determinar perfil simple basado en la primera causa
-            let perfil = "Explorador de Propósito";
-            if(userSelections.causes[0]) {
-                if(userSelections.causes[0].includes('salud')) perfil = "Promotor de Bienestar";
-                else if(userSelections.causes[0].includes('educación')) perfil = "Mentor de Crecimiento";
-                else if(userSelections.causes[0].includes('naturaleza')) perfil = "Defensor del Entorno";
-                else if(userSelections.causes[0].includes('injustas')) perfil = "Innovador de Soluciones";
-            }
+            const profile = (selections.talents.includes('t5') || selections.causes.includes('c4')) ? 'INNOVADOR TECNOLÓGICO' : 'MENTOR DE COMUNIDAD & RENDIMIENTO';
+            const desc = 'Tu patrón de respuestas demuestra una fuerte inclinación hacia tu perfil asignado. Tu camino ideal aprovecha tus habilidades naturales para resolver los problemas que te mueven.';
 
             try {
-                // Guardar en Supabase
-                // Descomenta y ajusta esta línea cuando pongas tus credenciales reales
-                /*
-                const { data, error } = await supabase
+                const { error } = await supabaseClient
                     .from('respuestas_proposito')
-                    .insert([
-                        { email: email, perfil_asignado: perfil, respuestas_json: userSelections }
-                    ]);
+                    .insert([{ 
+                        email: email, 
+                        perfil_detectado: profile, 
+                        respuestas_json: selections 
+                    }]);
+
                 if (error) throw error;
-                */
 
-                // Mostrar Resultados
-                document.getElementById('screen-email').classList.add('hidden');
-                document.getElementById('screen-results').classList.remove('hidden');
-                
-                document.getElementById('result-profile').innerText = perfil.toUpperCase();
-                document.getElementById('result-desc').innerText = `Tu inclinación natural por "${userSelections.talents[0]}" conectada con tu interés en resolver "${userSelections.causes[0]}" te posiciona idealmente para este perfil.`;
+                document.getElementById('email-screen').classList.add('hidden');
+                document.getElementById('result-screen').classList.remove('hidden');
+                document.getElementById('profile-title').innerText = profile;
+                document.getElementById('profile-desc').innerText = desc;
 
-            } catch (error) {
-                console.error(error);
-                alert('Hubo un error guardando tus respuestas. Revisa la consola o tus credenciales de Supabase.');
-                btn.innerText = 'Ver mis resultados';
-                btn.disabled = false;
+            } catch (err) {
+                alert('Hubo un error guardando los datos. Intenta nuevamente.');
+                document.getElementById('submit-btn').innerText = 'Ver mi Diagnóstico';
+                document.getElementById('submit-btn').disabled = false;
             }
         }
     </script>
