@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test de Ikigai y Propósito | Descubre a qué dedicarte en 3 minutos</title>
+  <meta name="description" content="Descubre tus talentos naturales, las causas que te mueven y tu modelo de trabajo ideal con nuestro test interactivo gratuito." />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .blur-preview {
+      filter: blur(8px);
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
+
+  <!-- TOP HEADER / BRANDING -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-lg text-slate-950 font-black text-lg">
+          <i class="fa-solid fa-compass"></i>
+        </div>
+        <div>
+          <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">IKIGAI LAB</span>
+          <span class="text-xs text-slate-400 block -mt-1">Orientación & Propósito</span>
+        </div>
+      </div>
+      <div id="connection-badge" class="flex items-center space-x-2 text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-medium">Supabase Conectado</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="max-w-4xl mx-auto px-4 py-8 w-full flex-grow">
+
+    <!-- SCREEN 0: WELCOME / INTRO -->
+    <div id="screen-intro" class="text-center py-6 space-y-8 max-w-2xl mx-auto">
+      <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs px-3 py-1.5 rounded-full font-medium">
+        <i class="fa-solid fa-bolt text-emerald-400"></i>
+        <span>Método Multicultural Integrado • 3 Minutos</span>
+      </div>
+      
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-white">
+        Descubre a qué dedicarte y encuentra tu <span class="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Propósito de Vida</span>
+      </h1>
+      
+      <p class="text-slate-300 text-base md:text-lg leading-relaxed">
+        Combina la sabiduría del <strong class="text-slate-100">Ikigai</strong>, el <strong class="text-slate-100">Dharma</strong> y la <strong class="text-slate-100">Logoterapia</strong> para identificar tus talentos naturales, las causas que te mueven y tu modelo de trabajo ideal.
+      </p>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-left py-2">
+        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
+          <i class="fa-solid fa-gem text-emerald-400 mb-2 text-lg"></i>
+          <p class="text-xs font-bold text-slate-200">1. Talentos</p>
+          <p class="text-[11px] text-slate-400">Lo que te sale fácil</p>
+        </div>
+        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
+          <i class="fa-solid fa-heart text-teal-400 mb-2 text-lg"></i>
+          <p class="text-xs font-bold text-slate-200">2. Causas</p>
+          <p class="text-[11px] text-slate-400">Lo que te mueve</p>
+        </div>
+        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
+          <i class="fa-solid fa-briefcase text-cyan-400 mb-2 text-lg"></i>
+          <p class="text-xs font-bold text-slate-200">3. Modelo</p>
+          <p class="text-[11px] text-slate-400">Tu trabajo ideal</p>
+        </div>
+        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
+          <i class="fa-solid fa-chess-knight text-indigo-400 mb-2 text-lg"></i>
+          <p class="text-xs font-bold text-slate-200">4. Plan Real</p>
+          <p class="text-[11px] text-slate-400">Acción pragmática</p>
+        </div>
+      </div>
+
+      <button onclick="startAssessment()" class="w-full md:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-lg rounded-xl shadow-lg shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-3 mx-auto">
+        <span>Iniciar Test Gratuito</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <!-- WIZARD CONTAINER -->
+    <div id="screen-wizard" class="hidden space-y-6">
+      
+      <!-- Progress Bar & Header -->
+      <div class="space-y-2">
+        <div class="flex justify-between items-center text-xs text-slate-400 font-medium">
+          <span id="step-indicator">PASO 1 DE 4</span>
+          <span id="step-percentage">25% Completado</span>
+        </div>
+        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+          <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-1/4 transition-all duration-300"></div>
+        </div>
+      </div>
+
+      <!-- Step Content Header -->
+      <div id="step-header" class="space-y-1">
+        <!-- Dynamic Header Content Inserted via JS -->
+      </div>
+
+      <!-- Category Filter Tabs (For Step 1 & 2) -->
+      <div id="category-tabs" class="flex overflow-x-auto space-x-2 pb-2 scrollbar-none">
+        <!-- Dynamic Category Buttons Inserted via JS -->
+      </div>
+
+      <!-- Cards Grid -->
+      <div id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Dynamic Cards Inserted via JS -->
+      </div>
+
+      <!-- Spacer for Sticky Bottom Bar -->
+      <div class="h-20"></div>
+
+      <!-- STICKY BOTTOM NAVIGATION BAR -->
+      <div class="fixed bottom-0 left-0 right-0 bg-slate-900/95 border-t border-slate-800 p-4 backdrop-blur-md z-30">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+          <button id="btn-back" onclick="previousStep()" class="px-4 py-2.5 text-slate-400 hover:text-slate-100 font-medium text-sm flex items-center space-x-2 disabled:opacity-30 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+            <span>Anterior</span>
+          </button>
+
+          <div id="selection-counter" class="text-xs text-slate-400 font-medium hidden md:block">
+            0 opciones seleccionadas
+          </div>
+
+          <button id="btn-next" onclick="nextStep()" disabled class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center space-x-2">
+            <span>Siguiente</span>
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SCREEN RESULT / EMAIL GATE -->
+    <div id="screen-result" class="hidden space-y-8 py-4">
+      
+      <!-- Blurred Result Preview Container -->
+      <div class="relative rounded-2xl border border-slate-800 bg-slate-800/40 p-6 overflow-hidden">
+        
+        <!-- Blurred Background Content -->
+        <div class="blur-preview space-y-6">
+          <div class="text-center space-y-2">
+            <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold">PERFIL DETECTADO</span>
+            <h2 class="text-3xl font-extrabold text-white">ARQUITECTO DE PRODUCTO SPORT-TECH</h2>
+            <p class="text-slate-400 text-sm max-w-xl mx-auto">Tu mapa combina habilidades analíticas y deportivas con la creación de soluciones eficientes.</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50">
+              <span class="text-xs text-slate-400">Coincidencia de Ikigai</span>
+              <p class="text-2xl font-bold text-emerald-400">92.5%</p>
+            </div>
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/50">
+              <span class="text-xs text-slate-400">Modelo Viable</span>
+              <p class="text-lg font-bold text-teal-300">Software / Consultoría</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- EMAIL CAPTURE OVERLAY -->
+        <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-6 text-center z-20">
+          <div class="max-w-md w-full space-y-5">
+            <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl border border-emerald-500/30">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-extrabold text-white">¡Tu mapa está listo!</h3>
+              <p class="text-slate-300 text-sm mt-1">Ingresa tu correo electrónico para desbloquear tu diagnóstico completo y recibir el informe en tu bandeja de entrada.</p>
+            </div>
+
+            <form id="email-form" onsubmit="submitResults(event)" class="space-y-3">
+              <div>
+                <input type="email" id="user-email" required placeholder="tu.correo@ejemplo.com" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm" />
+              </div>
+
+              <button type="submit" id="btn-submit" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2">
+                <span>Ver mi Mapa de Propósito</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </form>
+
+            <div id="status-message" class="text-xs font-medium hidden"></div>
+
+            <p class="text-[11px] text-slate-500">Prometemos no enviarte spam. Solo tu diagnóstico e información útil.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SCREEN FINAL CONFIRMATION -->
+    <div id="screen-unlocked" class="hidden space-y-6 py-4">
+      <div class="bg-slate-800/60 border border-slate-700 p-6 md:p-8 rounded-2xl space-y-6">
+        
+        <div class="flex items-center space-x-3 text-emerald-400">
+          <i class="fa-solid fa-circle-check text-2xl"></i>
+          <div>
+            <h3 class="font-bold text-lg text-white">¡Diagnóstico Desbloqueado Exitosamente!</h3>
+            <p class="text-xs text-slate-400">Tus datos se registraron correctamente en nuestra base de datos.</p>
+          </div>
+        </div>
+
+        <hr class="border-slate-700" />
+
+        <div class="space-y-4">
+          <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold inline-block">TU PERFIL RECOMENDADO</span>
+          <h2 id="final-profile-title" class="text-2xl md:text-3xl font-extrabold text-white">Cargando...</h2>
+          <p id="final-profile-desc" class="text-slate-300 text-sm leading-relaxed"></p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span class="text-xs text-slate-500 uppercase font-semibold">Tus Talentos Clave</span>
+            <p id="final-talents" class="text-sm font-medium text-slate-200"></p>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span class="text-xs text-slate-500 uppercase font-semibold">Modelo de Trabajo</span>
+            <p id="final-model" class="text-sm font-medium text-slate-200"></p>
+          </div>
+        </div>
+
+        <div class="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-xl text-center space-y-2">
+          <p class="text-xs text-emerald-300 font-medium">Te enviamos una copia detallada de este diagnóstico a tu correo electrónico.</p>
+          <button onclick="window.location.reload()" class="text-xs text-emerald-400 hover:text-emerald-300 underline font-semibold">Realizar la prueba de nuevo</button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+    <div class="max-w-4xl mx-auto px-4">
+      <p>© 2026 Ikigai Lab • Plataforma de Orientación de Propósito de Vida</p>
+    </div>
+  </footer>
+
+  <!-- APPLICATION LOGIC JS -->
+  <script>
+    // -------------------------------------------------------------
+    // 1. EMBEDDED SUPABASE CONFIGURATION
+    // -------------------------------------------------------------
+    const SUPABASE_URL = "https://uvmfiqohlwafjktzntaa.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_oGvNY6eL6bMado-D7jAyTw_6m3FLJOm";
+
+    let supabaseClient = null;
+
+    try {
+      if (window.supabase) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log("Supabase Client initialized automatically.");
+      }
+    } catch (e) {
+      console.warn("Could not initialize Supabase client automatically:", e);
+    }
+
+    // -------------------------------------------------------------
+    // 2. ASSESSMENT DATA SCHEMA & COPY (HIGH CONVERSION / GOOGLE INTENT)
+    // -------------------------------------------------------------
+    const wizardData = {
+      step1: {
+        title: "Paso 1: Mis Talentos Naturales",
+        subtitle: "Selecciona las cosas que a ti se te dan de forma fácil y natural (Dharma).",
+        minSelect: 1,
+        categories: [
+          { id: "all", label: "Todos" },
+          { id: "tech", label: "Mente Analítica" },
+          { id: "sports", label: "Fuerza & Acción" },
+          { id: "social", label: "Conexión Social" },
+          { id: "creative", label: "Creatividad" }
+        ],
+        cards: [
+          {
+            id: "tech_troubleshoot",
+            category: "tech",
+            icon: "fa-solid fa-wrench",
+            title: "Resolver enredos y apagar incendios técnicos",
+            desc: "Se te facilita detectar qué falla en un sistema, programa o proceso.",
+            example: "Cuando a un amigo no le funciona el PC, la TV o una web, acude a ti porque sabes dónde buscar la falla sin desesperarte."
+          },
+          {
+            id: "tech_structure",
+            category: "tech",
+            icon: "fa-solid fa-diagram-project",
+            title: "Organizar el caos y crear métodos",
+            desc: "Ves desorden y de inmediato creas una lista, plantilla o proceso ordenado.",
+            example: "Al planear un viaje en grupo, naturalmente te sale armar el itinerario, la tabla de gastos o las reservas para que todo fluya."
+          },
+          {
+            id: "sports_coordination",
+            category: "sports",
+            icon: "fa-solid fa-person-running",
+            title: "Deportes, coordinación y lectura del juego",
+            desc: "Aprendes movimientos físicos o dinámicas de juego casi sin practicar.",
+            example: "Captas la estrategia de un deporte rápidamente, destacas en juegos de agilidad o mantienes una disciplina física alta."
+          },
+          {
+            id: "sports_building",
+            category: "sports",
+            icon: "fa-solid fa-hammer",
+            title: "Destreza manual y construcción",
+            desc: "Trabajas con herramientas, armas objetos o arreglas cosas físicas.",
+            example: "Te gusta armar muebles de IKEA, reparar cosas de la casa, hacer maquetas o manipular herramientas reales."
+          },
+          {
+            id: "social_empathy",
+            category: "social",
+            icon: "fa-solid fa-comments",
+            title: "Escucha activa y consejos sinceros",
+            desc: "La gente te confía sus problemas y sabes dar perspectiva con calma.",
+            example: "Desconocidos o amigos te cuentan intimidades fácilmente porque transmites tranquilidad y no juzgas."
+          },
+          {
+            id: "creative_storytelling",
+            category: "creative",
+            icon: "fa-solid fa-pen-nib",
+            title: "Explicar ideas con simplicidad",
+            desc: "Usas metáforas, historias o analogías para que cualquiera entienda.",
+            example: "Cuando cuentas una anécdota enganchas a la audiencia, o te piden ayuda para redactar correos o discursos importantes."
+          }
+        ]
+      },
+
+      step2: {
+        title: "Paso 2: Lo que te molesta o preocupa",
+        subtitle: "Elige las causas o problemas reales que sientes el deseo de solucionar (Logoterapia).",
+        minSelect: 1,
+        categories: [],
+        cards: [
+          {
+            id: "cause_inefficiency",
+            icon: "fa-solid fa-hourglass-half",
+            title: "Procesos lentos e ineficientes",
+            desc: "Te frustra ver perder tiempo a las personas por mala organización.",
+            example: "Te molesta hacer filas innecesarias, trámites burocráticos o ver empresas trabajando de forma desordenada."
+          },
+          {
+            id: "cause_health",
+            icon: "fa-solid fa-heart-pulse",
+            title: "Sedentarismo y mala salud física",
+            desc: "Te preocupa la falta de energía, malos hábitos o sobrepeso en la gente.",
+            example: "Sientes el impulso de motivar a otros a moverse, comer bien, entrenar o cuidar su estado mental y físico."
+          },
+          {
+            id: "cause_environment",
+            icon: "fa-solid fa-leaf",
+            title: "Desperdicio de recursos y contaminación",
+            desc: "Te indigna la falta de conciencia ambiental y el desperdicio.",
+            example: "Te molesta el uso excesivo de plásticos, el malgasto de comida o la suciedad en las ciudades."
+          },
+          {
+            id: "cause_education",
+            icon: "fa-solid fa-graduation-cap",
+            title: "Falta de acceso al conocimiento práctico",
+            desc: "Te molesta cuando la información útil se enseña de forma aburrida.",
+            example: "Te indigna que la gente cometa errores por falta de educación o porque nadie se lo explicó con claridad."
+          }
+        ]
+      },
+
+      step3: {
+        title: "Paso 3: Tu Modelo de Trabajo Ideal",
+        subtitle: "¿Cómo te imaginas invirtiendo tu tiempo y energía diariamente? (Ikigai)",
+        minSelect: 1,
+        categories: [],
+        cards: [
+          {
+            id: "model_saas",
+            icon: "fa-solid fa-laptop-code",
+            title: "Creando Software o Herramientas Digitales",
+            desc: "Construir soluciones digitales (Apps, webs, automatizaciones) que escalen.",
+            example: "Sabor de trabajo: 'Construyo un producto digital una vez y miles de personas lo usan sin que yo esté presente todo el tiempo.'"
+          },
+          {
+            id: "model_consulting",
+            icon: "fa-solid fa-user-tie",
+            title: "Consultoría o Asesoría Estratégica",
+            desc: "Analizar el caso específico de una persona/empresa y dar la solución.",
+            example: "Sabor de trabajo: 'Me siento con un cliente, diagnostico su problema y le entrego una hoja de ruta clara.'"
+          },
+          {
+            id: "model_content",
+            icon: "fa-solid fa-video",
+            title: "Creación de Contenido y Educación",
+            desc: "Enseñar, hablar en público, grabar videos o escribir para inspirar.",
+            example: "Sabor de trabajo: 'Uso mi voz y cámara para comunicar conocimiento y construir una audiencia.'"
+          },
+          {
+            id: "model_community",
+            icon: "fa-solid fa-users",
+            title: "Gestión de Comunidad y Eventos Presenciales",
+            desc: "Organizar grupos, experiencias físicas, torneos o encuentros.",
+            example: "Sabor de trabajo: 'Prefiero el campo de acción real, juntando personas y creando dinámicas en vivo.'"
+          }
+        ]
+      },
+
+      step4: {
+        title: "Paso 4: Tu Punto de Partida Real",
+        subtitle: "Define tu disponibilidad y nivel de riesgo actual para ejecutar (Stoicism).",
+        minSelect: 2,
+        categories: [],
+        cards: [
+          {
+            id: "time_low",
+            icon: "fa-solid fa-clock",
+            title: "Tiempo: 1 a 3 horas por semana",
+            desc: "Tengo un empleo o estudio muy demandante, quiero ir a paso constante.",
+            example: "Perfecto para validar una idea en tus noches o fines de semana sin agobiarte."
+          },
+          {
+            id: "time_high",
+            icon: "fa-solid fa-bolt",
+            title: "Tiempo: +10 horas por semana",
+            desc: "Estoy en un periodo de transición y puedo meterle velocidad.",
+            example: "Ideal para construir un prototipo rápido y lanzarlo en pocas semanas."
+          },
+          {
+            id: "risk_conservative",
+            icon: "fa-solid fa-shield-halved",
+            title: "Riesgo Conservador",
+            desc: "Quiero mantener mi ingreso actual y probar la idea a costo cero.",
+            example: "Enfoque en herramientas gratuitas y validación previa antes de gastar dinero."
+          },
+          {
+            id: "risk_aggressive",
+            icon: "fa-solid fa-rocket",
+            title: "Riesgo Balanceado / Agresivo",
+            desc: "Estoy dispuesto a invertir tiempo y presupuesto en mi reinvención.",
+            example: "Disponibilidad para invertir en cursos, licencias de software y mentorías."
+          }
+        ]
+      }
+    };
+
+    // -------------------------------------------------------------
+    // 3. APP STATE MANAGEMENT
+    // -------------------------------------------------------------
+    let currentStep = 1;
+    let selectedCategory = "all";
+    let userSelections = {
+      step1: [],
+      step2: [],
+      step3: [],
+      step4: []
+    };
+
+    // -------------------------------------------------------------
+    // 4. NAVIGATION & RENDER FUNCTIONS
+    // -------------------------------------------------------------
+    function startAssessment() {
+      document.getElementById('screen-intro').classList.add('hidden');
+      document.getElementById('screen-wizard').classList.remove('hidden');
+      renderStep(1);
+    }
+
+    function renderStep(step) {
+      currentStep = step;
+      const stepKey = `step${step}`;
+      const config = wizardData[stepKey];
+
+      // Update Header Text & Progress
+      document.getElementById('step-indicator').innerText = `PASO ${step} DE 4`;
+      document.getElementById('step-percentage').innerText = `${step * 25}% COMPLETADO`;
+      document.getElementById('progress-bar').style.width = `${step * 25}%`;
+
+      document.getElementById('step-header').innerHTML = `
+        <h2 class="text-2xl font-bold text-white">${config.title}</h2>
+        <p class="text-slate-400 text-sm">${config.subtitle}</p>
+      `;
+
+      // Render Categories Filter if available
+      const tabsContainer = document.getElementById('category-tabs');
+      tabsContainer.innerHTML = '';
+      if (config.categories && config.categories.length > 0) {
+        tabsContainer.classList.remove('hidden');
+        config.categories.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+            selectedCategory === cat.id 
+              ? 'bg-emerald-500 text-slate-950 shadow-sm' 
+              : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+          }`;
+          btn.innerText = cat.label;
+          btn.onclick = () => {
+            selectedCategory = cat.id;
+            renderStep(step);
+          };
+          tabsContainer.appendChild(btn);
+        });
+      } else {
+        tabsContainer.classList.add('hidden');
+      }
+
+      // Render Cards
+      const grid = document.getElementById('cards-grid');
+      grid.innerHTML = '';
+
+      const filteredCards = (config.categories && config.categories.length > 0 && selectedCategory !== "all")
+        ? config.cards.filter(c => c.category === selectedCategory)
+        : config.cards;
+
+      filteredCards.forEach(card => {
+        const isSelected = userSelections[stepKey].includes(card.id);
+        const cardEl = document.createElement('div');
+        
+        cardEl.className = `p-4 rounded-xl border text-left cursor-pointer transition-all relative space-y-3 ${
+          isSelected 
+            ? 'bg-emerald-950/40 border-emerald-500 ring-1 ring-emerald-500' 
+            : 'bg-slate-800/60 border-slate-700/60 hover:border-slate-500'
+        }`;
+
+        cardEl.onclick = (e) => {
+          // Ignore click if user clicked on the example toggle button
+          if (e.target.closest('.example-toggle')) return;
+          toggleCardSelection(stepKey, card.id, config.minSelect);
+        };
+
+        cardEl.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="w-10 h-10 rounded-lg ${isSelected ? 'bg-emerald-500 text-slate-950' : 'bg-slate-700/60 text-slate-300'} flex items-center justify-center text-lg">
+              <i class="${card.icon}"></i>
+            </div>
+            <div class="w-6 h-6 rounded-full border ${isSelected ? 'bg-emerald-500 border-emerald-500 text-slate-950' : 'border-slate-600'} flex items-center justify-center text-xs">
+              <i class="fa-solid fa-check ${isSelected ? 'block' : 'hidden'}"></i>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-slate-100 text-base leading-snug">${card.title}</h3>
+            <p class="text-slate-400 text-xs mt-1 leading-relaxed">${card.desc}</p>
+          </div>
+
+          <!-- EXAMPLE TOGGLE BUTTON -->
+          <div class="pt-1 border-t border-slate-700/40">
+            <button class="example-toggle text-[11px] text-emerald-400 hover:text-emerald-300 font-medium flex items-center space-x-1" onclick="toggleExample('${card.id}')">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Ver ejemplo cotidiano</span>
+            </button>
+            <div id="example-${card.id}" class="hidden text-[11px] text-slate-300 bg-slate-900/80 p-2.5 rounded-lg mt-2 border border-slate-700/50 leading-relaxed italic">
+              "${card.example}"
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(cardEl);
+      });
+
+      updateNavigationState();
+    }
+
+    function toggleExample(cardId) {
+      const el = document.getElementById(`example-${cardId}`);
+      if (el) el.classList.toggle('hidden');
+    }
+
+    function toggleCardSelection(stepKey, cardId, minSelect) {
+      const selections = userSelections[stepKey];
+      const index = selections.indexOf(cardId);
+
+      if (index > -1) {
+        selections.splice(index, 1);
+      } else {
+        selections.push(cardId);
+      }
+
+      renderStep(currentStep);
+    }
+
+    function updateNavigationState() {
+      const stepKey = `step${currentStep}`;
+      const config = wizardData[stepKey];
+      const selectedCount = userSelections[stepKey].length;
+
+      document.getElementById('selection-counter').innerText = `${selectedCount} elegida(s) (Mínimo ${config.minSelect})`;
+      
+      const btnNext = document.getElementById('btn-next');
+      const btnBack = document.getElementById('btn-back');
+
+      btnBack.disabled = (currentStep === 1);
+      btnNext.disabled = (selectedCount < config.minSelect);
+
+      if (currentStep === 4) {
+        btnNext.innerHTML = `<span>Finalizar</span> <i class="fa-solid fa-check text-xs"></i>`;
+      } else {
+        btnNext.innerHTML = `<span>Siguiente</span> <i class="fa-solid fa-chevron-right text-xs"></i>`;
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 1) {
+        selectedCategory = "all";
+        renderStep(currentStep - 1);
+      }
+    }
+
+    function nextStep() {
+      if (currentStep < 4) {
+        selectedCategory = "all";
+        renderStep(currentStep + 1);
+      } else {
+        showResultGate();
+      }
+    }
+
+    function showResultGate() {
+      document.getElementById('screen-wizard').classList.add('hidden');
+      document.getElementById('screen-result').classList.remove('hidden');
+    }
+
+    // -------------------------------------------------------------
+    // 5. SUPABASE DATA SAVE & FINAL DISPLAY
+    // -------------------------------------------------------------
+    async function submitResults(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('user-email').value.trim();
+      const statusMsg = document.getElementById('status-message');
+      const btnSubmit = document.getElementById('btn-submit');
+
+      if (!email) return;
+
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Procesando...</span>`;
+      
+      statusMsg.classList.remove('hidden', 'text-red-400', 'text-emerald-400');
+      statusMsg.innerText = "Guardando diagnóstico...";
+
+      // Build Output Payload
+      const profileId = determineProfile(userSelections);
+      const payload = {
+        email: email,
+        perfil_id: profileId,
+        score_coincidencia: 94.0,
+        respuestas_json: userSelections,
+        created_at: new Date().toISOString()
+      };
+
+      let success = false;
+
+      // Direct Supabase Integration
+      if (supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient
+            .from('respuestas_proposito')
+            .insert([payload]);
+
+          if (error) throw error;
+          success = true;
+          console.log("Data saved to Supabase successfully:", data);
+        } catch (err) {
+          console.error("Error saving to Supabase:", err);
+          statusMsg.classList.add('text-amber-400');
+          statusMsg.innerText = "Guardado localmente (no se pudo conectar a la BD remota).";
+        }
+      } else {
+        statusMsg.classList.add('text-amber-400');
+        statusMsg.innerText = "Cliente de base de datos no activo. Continuando en modo demostración...";
+      }
+
+      setTimeout(() => {
+        showFinalUnlockedScreen(email, profileId);
+      }, 1000);
+    }
+
+    function determineProfile(selections) {
+      const step1 = selections.step1 || [];
+      if (step1.includes('tech_troubleshoot') && step1.includes('sports_coordination')) {
+        return "ARQUITECTO DE PRODUCTOS SPORT-TECH";
+      } else if (step1.includes('creative_storytelling')) {
+        return "CREADOR DE CONTENIDO & CONSULTOR ESTRATÉGICO";
+      } else if (step1.includes('social_empathy')) {
+        return "MENTOR DE COMUNIDAD & RENDIMIENTO";
+      }
+      return "CONSULTOR EN OPTIMIZACIÓN Y SISTEMAS";
+    }
+
+    function showFinalUnlockedScreen(email, profileId) {
+      document.getElementById('screen-result').classList.add('hidden');
+      document.getElementById('screen-unlocked').classList.remove('hidden');
+
+      document.getElementById('final-profile-title').innerText = profileId;
+      document.getElementById('final-profile-desc').innerText = 
+        `Tu patrón de respuestas demuestra una fuerte inclinación por combinar la estructura analítica con la ejecución práctica. Tu camino ideal aprovecha herramientas digitales para resolver problemas tangibles.`;
+
+      document.getElementById('final-talents').innerText = 
+        userSelections.step1.map(id => id.replace('_', ' ').toUpperCase()).join(', ');
+        
+      document.getElementById('final-model').innerText = 
+        userSelections.step3.map(id => id.replace('_', ' ').toUpperCase()).join(', ');
+    }
+  </script>
+</body>
+</html>
