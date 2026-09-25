@@ -1,0 +1,28 @@
+// --- DATOS DE LAS PREGUNTAS ---
+const talentsData = [
+    { id: 't1', title: 'Enseñar y guiar a otros', desc: 'Tienes paciencia infinita y disfrutas ver cómo la gente aprende algo nuevo gracias a ti.' },
+    { id: 't2', title: 'Moverte y hacer deporte', desc: 'Tienes mucha energía física, se te dan bien los deportes, el baile o actividades de destreza.' },
+    { id: 't3', title: 'Trabajar con las manos', desc: 'Eres hábil construyendo, reparando, haciendo jardinería, carpintería o creando cosas.' },
+    { id: 't4', title: 'Cocinar y alimentar', desc: 'Te relaja experimentar con ingredientes y hacer felices a los demás a través de una buena comida.' },
+    { id: 't5', title: 'Dominar la tecnología', desc: 'Le agarras la onda rapidísimo a cualquier app, videojuego o programa sin leer manuales.' },
+    { id: 't6', title: 'Aprender idiomas', desc: 'Se te facilita entender otras lenguas y conectar rápido con personas de otros países.' },
+    { id: 't7', title: 'La música y el ritmo', desc: 'Tienes buen oído, tocas instrumentos, cantas o la música es tu forma de expresarte.' },
+    { id: 't8', title: 'Escuchar y dar consejos', desc: 'Tus amigos siempre te buscan para desahogarse o para saber tu opinión.' },
+    { id: 't9', title: 'Organizar el desastre', desc: 'Te gusta el orden, haces listas, planeas y cuidas los detalles que a otros se les escapan.' },
+    { id: 't10', title: 'Crear e inventar', desc: 'Siempre tienes ideas nuevas, te gusta escribir, diseñar, decorar o imaginar cosas.' },
+    { id: 't11', title: 'Resolver problemas', desc: 'Eres el que arregla cosas, entiende los manuales o busca el "cómo se hace" rápido.' },
+    { id: 't12', title: 'Tomar la iniciativa', desc: 'No te da pena hablar, sabes organizar grupos y hacer que las cosas pasen.' },
+    { id: 't13', title: 'Investigar a fondo', desc: 'Eres muy curioso, te gusta leer, comparar opciones y entender el porqué de las cosas.' },
+    { id: 't14', title: 'Conectar personas', desc: 'Eres el puente en tus grupos sociales; sabes quién puede ayudar a quién.' },
+    { id: 't15', title: 'Entretener y comunicar', desc: 'Se te da bien hablar en público, contar anécdotas y captar la atención de los demás.' },
+    { id: 't16', title: 'Cuidar de otros', desc: 'Tienes un instinto natural para asegurar que todos a tu alrededor estén bien y seguros.' },
+    { id: 't17', title: 'Convencer y negociar', desc: 'Tienes facilidad de palabra, sabes conseguir un buen trato y vender una idea.' },
+    { id: 't18', title: 'Hacer rendir el dinero', desc: 'Sabes dónde están las ofertas, cómo ahorrar y administrar bien los recursos.' }
+];
+
+const causesData = [
+    { id: 'c1', title: 'La salud física y mental', desc: 'Quieres ayudar a que la gente viva más tranquila, sana y maneje mejor el estrés.' },
+    { id: 'c2', title: 'La falta de educación y guía', desc: 'Quieres enseñar habilidades prácticas y ayudar a otros a descubrir su potencial.' },
+    { id: 'c3', title: 'El daño a la naturaleza', desc: 'Te duele el maltrato animal o la contaminación, y sientes la necesidad de cuidar el planeta.' },
+    { id: 'c4', title: 'Las cosas ineficientes o injustas', desc: 'Te frustran los problemas sin resolver y quieres crear soluciones o negocios que faciliten la vida.' }
+];
