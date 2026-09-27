@@ -108,14 +108,12 @@
 
     <!-- SCRIPT PRINCIPAL -->
     <script>
-        // CONFIGURACIÓN DE APIS (Asegúrate de colocar tus keys reales si han cambiado)
         const SUPABASE_URL = 'https://uvmfiqohlwafjktzntaa.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_oGvNY6eL6bMado-D7jAyTw_6m3FLJOm';
         const GEMINI_API_KEY = 'AIzaSyB8w09sGwaqck2dzt1ZGhVAtmjAGTr0tGU';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // DATOS DE LAS OPCIONES
         const talentsData = [
             { id: 't1', title: 'Enseñar y guiar a otros', desc: 'Tienes paciencia infinita y disfrutas ver cómo la gente aprende.' },
             { id: 't2', title: 'Moverte y hacer deporte', desc: 'Tienes mucha energía, se te dan bien los deportes o el baile.' },
@@ -158,7 +156,7 @@
         let currentStep = 1;
         let selections = { talents: [], causes: [], models: [] };
         const MAX_SELECTIONS = { 1: 3, 2: 2, 3: 2 };
-        let fullAiResponse = ""; // Variable para guardar el reporte completo
+        let fullAiResponse = ""; 
 
         function startTest() {
             document.getElementById('welcome-screen').classList.add('hidden');
@@ -248,15 +246,25 @@
             const selectedCauses = causesData.filter(c => selections.causes.includes(c.id)).map(c => c.title).join(', ');
             const selectedModels = modelsData.filter(m => selections.models.includes(m.id)).map(m => m.title).join(', ');
 
-            // Obtenemos todo el reporte de la IA
             fullAiResponse = await fetchGeminiInsight(selectedTalents, selectedCauses, selectedModels);
 
-            // Extracción flexible y construcción de Fallback
+            let teaserText = "";
             const purposeMatch = fullAiResponse.match(/###\s*Tu Propósito Definido[\s\S]*?\n([\s\S]*?)(?=###|$)/i);
-            let teaserText = `Ayudar a resolver problemas de ${selectedCauses.toLowerCase()} aplicando tu capacidad para ${selectedTalents.toLowerCase()}, entregando valor a través de ${selectedModels.toLowerCase()}.`; 
             
-            if (purposeMatch && purposeMatch[1] && !purposeMatch[1].includes("Error")) {
+            if (purposeMatch && purposeMatch[1] && !purposeMatch[1].includes("hubo un problema técnico")) {
                 teaserText = purposeMatch[1].trim();
+            } else if (fullAiResponse && !fullAiResponse.includes("hubo un problema técnico")) {
+                const parrafos = fullAiResponse.split('\n').filter(p => p.trim().length > 20 && !p.trim().startsWith('#'));
+                if (parrafos.length > 0) {
+                    teaserText = parrafos[0].trim();
+                }
+            }
+            
+            if (!teaserText) {
+                const mainTalent = selectedTalents.split(',')[0].toLowerCase();
+                const mainCause = selectedCauses.split(',')[0].toLowerCase();
+                const mainModel = selectedModels.split(',')[0].toLowerCase();
+                teaserText = `Convertir tu habilidad natural para ${mainTalent} en una herramienta poderosa para reducir los problemas de ${mainCause}, entregando claridad y resultados reales a través de un formato de ${mainModel}.`; 
             }
 
             document.getElementById('loading-screen').classList.add('hidden');
@@ -275,13 +283,11 @@
             const selectedCauses = causesData.filter(c => selections.causes.includes(c.id)).map(c => c.title).join(', ');
             const selectedModels = modelsData.filter(m => selections.models.includes(m.id)).map(m => m.title).join(', ');
 
-            // Guardado silencioso en Supabase
             supabaseClient.from('respuestas_proposito').insert([{ 
                 email: email, 
                 respuestas_json: { talents: selectedTalents, causes: selectedCauses, models: selectedModels } 
-            }]).then(() => console.log('Guardado exitoso en base de datos.')).catch(e => console.error(e));
+            }]).then(() => console.log('Guardado exitoso')).catch(e => console.error(e));
 
-            // Transición UI
             document.getElementById('teaser-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             
@@ -293,7 +299,7 @@
         }
 
         async function fetchGeminiInsight(talents, causes, models) {
-            const prompt = `Actúa como un experto consultor de negocios. Tengo un cliente con estos datos:
+            const prompt = `Actúa como un experto consultor de negocios y life coach. Tengo un cliente con estos datos:
             - Dones naturales: ${talents}
             - Problemas que quiere resolver: ${causes}
             - Modelo de trabajo preferido: ${models}
@@ -301,7 +307,7 @@
             Genera un reporte usando este formato exacto en Markdown:
             
             ### Tu Propósito Definido
-            [Escribe 1 solo párrafo contundente uniendo sus dones, causas y modelo en una declaración de misión profesional. Ejemplo: "Brindar claridad y dirección a personas en crisis mediante sesiones de acompañamiento..."]
+            [Escribe 1 solo párrafo inspirador, contundente y humano uniendo sus dones, causas y modelo en una declaración de misión profesional. Haz que suene revelador y valioso, no parezcas un robot enumerando cosas. Ejemplo: "Brindar claridad y dirección a personas en crisis mediante sesiones de acompañamiento..."]
             
             ### 3 Proyectos Mínimos Viables (MVP)
             [Crea 3 ideas de negocio específicas que apliquen esta combinación. Incluye: Nombre, Qué es, y A quién se le cobra].
@@ -333,13 +339,12 @@
             } catch (error) {
                 console.error("Error contactando la IA:", error);
                 
-                // SALVAVIDAS INTELIGENTE DE EMERGENCIA
                 return `### Tu Propósito Definido
-Generar un impacto positivo resolviendo problemas de ${causes.toLowerCase()} mediante tu talento natural para ${talents.toLowerCase()}, estructurado a través de un modelo de ${models.toLowerCase()}.
+Guiar a otros hacia el bienestar y la claridad aplicando tus fortalezas naturales para resolver los desafíos más urgentes de tu entorno, estructurando tu valor en un formato sostenible y rentable.
 
 ### 3 Proyectos Mínimos Viables (MVP)
-1. **La Solución Directa:** Ofrecer tu conocimiento específico empaquetado en formato de ${models.toLowerCase()} para aquellos que sufren por ${causes.toLowerCase()}.
-2. **El Puente Comunitario:** Crear un espacio donde apliques tu habilidad de ${talents.toLowerCase()} para unir a personas con el mismo desafío.
+1. **La Solución Directa:** Ofrecer tu conocimiento específico empaquetado en tu modelo preferido para aquellos que sufren por las causas que elegiste.
+2. **El Puente Comunitario:** Crear un espacio donde apliques tus talentos para unir a personas con el mismo desafío.
 3. **El Servicio Premium:** Una experiencia a medida que resuelve el problema de raíz cobrando por el resultado final.
 
 ### Anclaje Estoico & Plan a 7 Días
