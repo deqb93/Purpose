@@ -4,17 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Purpose Lab - Descubre tu Propósito</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Markdown Parser (Para interpretar a Gemini) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Convertidor a PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        /* Estilos para el texto generado por Gemini */
         .markdown-body h3 { color: #2dd4bf; font-size: 1.25rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.5rem; }
         .markdown-body p { margin-bottom: 1rem; color: #d1d5db; line-height: 1.6; }
         .markdown-body ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; color: #d1d5db; }
@@ -23,7 +18,6 @@
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen flex flex-col items-center p-4 md:p-8">
 
-    <!-- PANTALLA INICIAL -->
     <div id="welcome-screen" class="max-w-3xl w-full text-center space-y-6 mt-10">
         <div class="text-teal-400 font-bold tracking-widest text-sm mb-2 border border-teal-400/30 inline-block px-3 py-1 rounded-full bg-teal-400/10">PURPOSE LAB</div>
         <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight">Descubre tu <span class="text-teal-400">Propósito</span> y el Modelo para Monetizarlo</h1>
@@ -33,16 +27,14 @@
         </button>
     </div>
 
-    <!-- CONTENEDOR DEL TEST (3 FASES) -->
     <div id="test-container" class="hidden w-full max-w-5xl bg-gray-800 rounded-2xl p-6 md:p-10 shadow-2xl border border-gray-700 mt-4">
         <div class="mb-6 flex justify-between items-center border-b border-gray-700 pb-4">
-            <h2 id="step-title" class="text-2xl font-bold text-teal-400">Fase 1: Tus Talentos</h2>
+            <h2 id="step-title" class="text-2xl font-bold text-teal-400">Fase 1: Tus Dones (Dharma)</h2>
             <span id="step-counter" class="text-gray-400 text-sm font-mono bg-gray-900 px-3 py-1 rounded-full border border-gray-600">Paso 1 de 3</span>
         </div>
         
         <p id="step-instruction" class="text-gray-300 mb-6 text-lg"></p>
         
-        <!-- Grid de Opciones -->
         <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"></div>
         
         <div class="flex justify-between items-center">
@@ -53,7 +45,6 @@
         </div>
     </div>
 
-    <!-- PANTALLA DE CAPTURA DE CORREO -->
     <div id="email-screen" class="hidden w-full max-w-md bg-gray-800 rounded-2xl p-8 text-center shadow-2xl border border-gray-700 mt-10">
         <h2 class="text-2xl font-bold text-white mb-2">Análisis Completado</h2>
         <p class="text-gray-400 mb-6">Nuestra IA está lista para procesar tu matriz Ikigai. Ingresa tu correo para generar y guardar tu reporte.</p>
@@ -63,17 +54,13 @@
         </button>
     </div>
 
-    <!-- PANTALLA DE CARGA (GEMINI PENSANDO) -->
     <div id="loading-screen" class="hidden w-full max-w-md mt-20 text-center">
         <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-500 mx-auto mb-4"></div>
         <h3 class="text-xl font-bold text-white">Purpose Lab IA trabajando...</h3>
         <p class="text-gray-400 mt-2">Cruzando tus talentos, causas y modelos de negocio para crear proyectos únicos.</p>
     </div>
 
-    <!-- PANTALLA DE DIAGNÓSTICO (REPORTE GENERADO) -->
     <div id="result-screen" class="hidden w-full max-w-4xl mt-6 mb-12">
-        
-        <!-- Botones de Acción Superiores -->
         <div class="flex justify-between items-center mb-4">
             <div class="text-teal-400 font-bold tracking-widest text-sm border border-teal-400/30 px-3 py-1 rounded-full bg-teal-400/10">TU MAPA IKIGAI</div>
             <button onclick="downloadPDF()" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded border border-gray-500 text-sm flex items-center gap-2 transition">
@@ -82,11 +69,9 @@
             </button>
         </div>
 
-        <!-- Contenedor del PDF -->
         <div id="pdf-content" class="bg-gray-800 rounded-2xl p-8 md:p-12 shadow-2xl border border-gray-700">
             <h2 class="text-4xl font-extrabold text-white mb-6">Diagnóstico Purpose Lab</h2>
             
-            <!-- Resumen de selecciones -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
                     <span class="text-xs text-gray-500 font-bold uppercase tracking-wider block mb-1">Tus Dones</span>
@@ -101,75 +86,61 @@
                     <p id="res-models" class="text-sm text-teal-400"></p>
                 </div>
             </div>
-
             <hr class="border-gray-700 mb-8">
-
-            <!-- Respuesta Inyectada por IA -->
-            <div id="ai-response-container" class="markdown-body">
-                <!-- Aquí entra el HTML generado por Marked.js -->
-            </div>
-            
-            <div class="mt-12 bg-teal-900/20 p-6 rounded-lg border border-teal-500/30 text-center">
-                <h3 class="text-teal-400 font-bold text-lg mb-2">¿Listo para el siguiente nivel?</h3>
-                <p class="text-sm text-gray-300">Este es solo tu diagnóstico inicial. Pronto habilitaremos los planes de acompañamiento táctico para lanzar tu proyecto en 30 días.</p>
-            </div>
+            <div id="ai-response-container" class="markdown-body"></div>
         </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN DE APIS (¡Reemplazar con tus claves reales!)
         const SUPABASE_URL = 'https://uvmfiqohlwafjktzntaa.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_oGvNY6eL6bMado-D7jAyTw_6m3FLJOm';
         const GEMINI_API_KEY = 'TU_API_KEY_GEMINI_AQUI'; AIzaSyB8w09sGwaqck2dzt1ZGhVAtmjAGTr0tGU
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // BASE DE DATOS LOCAL PARA LA UI
         const talentsData = [
-            { id: 't1', title: 'Enseñar y guiar a otros', desc: 'Tienes paciencia infinita y disfrutas ver cómo la gente aprende algo nuevo gracias a ti.' },
-            { id: 't2', title: 'Moverte y hacer deporte', desc: 'Tienes mucha energía, se te dan bien los deportes, el baile o actividades de destreza.' },
-            { id: 't3', title: 'Trabajar con las manos', desc: 'Eres hábil construyendo, reparando, haciendo jardinería, carpintería o creando cosas tangibles.' },
-            { id: 't4', title: 'Cocinar y alimentar', desc: 'Te relaja experimentar con ingredientes y hacer felices a los demás a través de una buena comida.' },
-            { id: 't5', title: 'Dominar la tecnología', desc: 'Le agarras la onda rapidísimo a cualquier app, videojuego o programa sin leer manuales.' },
-            { id: 't6', title: 'Aprender idiomas', desc: 'Se te facilita entender otras lenguas y conectar rápido con personas de otros países.' },
-            { id: 't7', title: 'La música y el ritmo', desc: 'Tienes buen oído, tocas instrumentos, cantas o la música es tu forma de expresarte.' },
-            { id: 't8', title: 'Escuchar y dar consejos', desc: 'Tus amigos siempre te buscan para desahogarse o para saber tu opinión.' },
-            { id: 't9', title: 'Organizar el desastre', desc: 'Te gusta el orden, haces listas, planeas y cuidas los detalles que a otros se les escapan.' },
-            { id: 't10', title: 'Crear e inventar', desc: 'Siempre tienes ideas nuevas, te gusta escribir, diseñar, decorar o imaginar cosas.' },
-            { id: 't11', title: 'Resolver problemas', desc: 'Eres el que arregla cosas, entiende los manuales o busca el "cómo se hace" rápido.' },
-            { id: 't12', title: 'Tomar la iniciativa', desc: 'No te da pena hablar, sabes organizar grupos y hacer que las cosas pasen.' },
-            { id: 't13', title: 'Investigar a fondo', desc: 'Eres muy curioso, te gusta leer, comparar opciones y entender el porqué de las cosas.' },
-            { id: 't14', title: 'Conectar personas', desc: 'Eres el puente en tus grupos sociales; sabes quién puede ayudar a quién.' },
-            { id: 't15', title: 'Entretener y comunicar', desc: 'Se te da bien hablar en público, contar anécdotas y captar la atención de los demás.' },
-            { id: 't16', title: 'Cuidar de otros', desc: 'Tienes un instinto natural para asegurar que todos a tu alrededor estén bien y seguros.' },
-            { id: 't17', title: 'Convencer y negociar', desc: 'Tienes facilidad de palabra, sabes conseguir un buen trato y vender una idea.' },
-            { id: 't18', title: 'Hacer rendir el dinero', desc: 'Sabes dónde están las ofertas, cómo ahorrar y administrar bien los recursos.' }
+            { id: 't1', title: 'Enseñar y guiar a otros', desc: 'Tienes paciencia infinita y disfrutas ver cómo la gente aprende.' },
+            { id: 't2', title: 'Moverte y hacer deporte', desc: 'Tienes mucha energía, se te dan bien los deportes o el baile.' },
+            { id: 't3', title: 'Trabajar con las manos', desc: 'Eres hábil construyendo, reparando o creando cosas tangibles.' },
+            { id: 't4', title: 'Cocinar y alimentar', desc: 'Te relaja experimentar con ingredientes y hacer felices a otros.' },
+            { id: 't5', title: 'Dominar la tecnología', desc: 'Le agarras la onda rapidísimo a cualquier app sin manuales.' },
+            { id: 't6', title: 'Aprender idiomas', desc: 'Se te facilita entender otras lenguas y conectar rápido.' },
+            { id: 't7', title: 'La música y el ritmo', desc: 'Tienes buen oído, tocas instrumentos o cantas.' },
+            { id: 't8', title: 'Escuchar y dar consejos', desc: 'Tus amigos siempre te buscan para desahogarse.' },
+            { id: 't9', title: 'Organizar el desastre', desc: 'Te gusta el orden, haces listas y cuidas los detalles.' },
+            { id: 't10', title: 'Crear e inventar', desc: 'Siempre tienes ideas nuevas, te gusta escribir o diseñar.' },
+            { id: 't11', title: 'Resolver problemas', desc: 'Eres el que arregla cosas o busca el "cómo se hace" rápido.' },
+            { id: 't12', title: 'Tomar la iniciativa', desc: 'No te da pena hablar, sabes organizar grupos.' },
+            { id: 't13', title: 'Investigar a fondo', desc: 'Eres muy curioso, te gusta leer y comparar opciones.' },
+            { id: 't14', title: 'Conectar personas', desc: 'Eres el puente en tus grupos sociales; sabes quién ayuda a quién.' },
+            { id: 't15', title: 'Entretener y comunicar', desc: 'Se te da bien hablar en público y captar la atención.' },
+            { id: 't16', title: 'Cuidar de otros', desc: 'Tienes un instinto natural para asegurar que todos estén bien.' },
+            { id: 't17', title: 'Convencer y negociar', desc: 'Tienes facilidad de palabra, sabes conseguir un buen trato.' },
+            { id: 't18', title: 'Hacer rendir el dinero', desc: 'Sabes dónde están las ofertas y administrar bien los recursos.' }
         ];
 
         const causesData = [
-            { id: 'c1', title: 'Salud y Estrés', desc: 'Ansiedad, agotamiento y falta de paz mental en la sociedad actual.' },
-            { id: 'c2', title: 'Educación Práctica', desc: 'Falta de habilidades útiles, estancamiento personal y mala orientación.' },
-            { id: 'c3', title: 'Sostenibilidad', desc: 'Daño al medio ambiente, desperdicio de recursos y maltrato animal.' },
-            { id: 'c4', title: 'Ineficiencia y Burocracia', desc: 'Procesos lentos, trámites absurdos y cosas que complican la vida diaria.' },
-            { id: 'c5', title: 'Soledad y Desconexión', desc: 'El aislamiento por las pantallas y la falta de comunidad real.' },
-            { id: 'c6', title: 'Falta de Oportunidades', desc: 'Desigualdad y barreras que impiden a las personas o negocios crecer.' }
+            { id: 'c1', title: 'Salud y Estrés', desc: 'Ansiedad, agotamiento y falta de paz mental.' },
+            { id: 'c2', title: 'Educación Práctica', desc: 'Falta de habilidades útiles y estancamiento personal.' },
+            { id: 'c3', title: 'Sostenibilidad', desc: 'Daño al medio ambiente y desperdicio de recursos.' },
+            { id: 'c4', title: 'Ineficiencia y Burocracia', desc: 'Procesos lentos y cosas que complican la vida diaria.' },
+            { id: 'c5', title: 'Soledad y Desconexión', desc: 'El aislamiento por las pantallas y la falta de comunidad.' },
+            { id: 'c6', title: 'Falta de Oportunidades', desc: 'Desigualdad y barreras que impiden a las personas crecer.' }
         ];
 
         const modelsData = [
-            { id: 'm1', title: 'Sesiones 1 a 1 / Consultoría', desc: 'Trabajar directamente con clientes ofreciendo tu consejo, análisis o acompañamiento.' },
-            { id: 'm2', title: 'Software y Herramientas', desc: 'Crear aplicaciones, plantillas o herramientas digitales que hagan el trabajo por el usuario.' },
-            { id: 'm3', title: 'Creación de Contenido', desc: 'Compartir conocimiento vía podcast, newsletters, videos o comunidades online.' },
-            { id: 'm4', title: 'Emprendimiento Físico', desc: 'Tener un local, vender productos físicos tangibles o brindar experiencias presenciales.' },
-            { id: 'm5', title: 'Entorno Corporativo', desc: 'Ser parte de una empresa estable trabajando en equipo para grandes proyectos.' },
-            { id: 'm6', title: 'Talleres y Educación', desc: 'Crear cursos, dar capacitaciones a grupos y facilitar procesos de aprendizaje.' }
+            { id: 'm1', title: 'Sesiones 1 a 1 / Consultoría', desc: 'Trabajar directamente con clientes ofreciendo tu consejo.' },
+            { id: 'm2', title: 'Software y Herramientas', desc: 'Crear apps o plantillas que hagan el trabajo por el usuario.' },
+            { id: 'm3', title: 'Creación de Contenido', desc: 'Compartir conocimiento vía podcast, newsletters o videos.' },
+            { id: 'm4', title: 'Emprendimiento Físico', desc: 'Vender productos tangibles o brindar experiencias presenciales.' },
+            { id: 'm5', title: 'Entorno Corporativo', desc: 'Ser parte de una empresa estable trabajando en equipo.' },
+            { id: 'm6', title: 'Talleres y Educación', desc: 'Crear cursos y facilitar procesos de aprendizaje.' }
         ];
 
-        // ESTADO DE LA APP
         let currentStep = 1;
         let selections = { talents: [], causes: [], models: [] };
-        const MAX_SELECTIONS = { 1: 3, 2: 2, 3: 2 }; // Máximo de opciones por fase
+        const MAX_SELECTIONS = { 1: 3, 2: 2, 3: 2 };
 
-        // LOGICA DE INTERFAZ
         function startTest() {
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('test-container').classList.remove('hidden');
@@ -177,38 +148,42 @@
         }
 
         function renderStep() {
-            const grid = document.getElementById('options-grid');
-            grid.innerHTML = '';
-            
-            let data, instruction, title;
-            if (currentStep === 1) {
-                data = talentsData;
-                title = 'Fase 1: Tus Dones (Dharma)';
-                instruction = 'Selecciona hasta 3 cosas que se te dan bien de forma natural:';
-            } else if (currentStep === 2) {
-                data = causesData;
-                title = 'Fase 2: Problemas (Logoterapia)';
-                instruction = 'Selecciona hasta 2 problemas que más te frustra ver en el mundo:';
-            } else {
-                data = modelsData;
-                title = 'Fase 3: Tu Vehículo (Modelo)';
-                instruction = 'Selecciona hasta 2 formas en las que preferirías entregar tu valor:';
+            try {
+                const grid = document.getElementById('options-grid');
+                grid.innerHTML = '';
+                
+                let data, instruction, title;
+                if (currentStep === 1) {
+                    data = talentsData;
+                    title = 'Fase 1: Tus Dones (Dharma)';
+                    instruction = 'Selecciona hasta 3 cosas que se te dan bien de forma natural:';
+                } else if (currentStep === 2) {
+                    data = causesData;
+                    title = 'Fase 2: Problemas (Logoterapia)';
+                    instruction = 'Selecciona hasta 2 problemas que más te frustra ver en el mundo:';
+                } else {
+                    data = modelsData;
+                    title = 'Fase 3: Tu Vehículo (Modelo)';
+                    instruction = 'Selecciona hasta 2 formas en las que preferirías entregar tu valor:';
+                }
+                
+                document.getElementById('step-title').innerText = title;
+                document.getElementById('step-counter').innerText = `Paso ${currentStep} de 3`;
+                document.getElementById('step-instruction').innerText = instruction;
+                updateCounter();
+                
+                data.forEach(item => {
+                    const currentSelections = getActiveArray();
+                    const isSelected = currentSelections.includes(item.id);
+                    const card = document.createElement('div');
+                    card.className = `p-5 rounded-xl cursor-pointer border-2 transition-all duration-200 ${isSelected ? 'border-teal-400 bg-teal-900/30 transform scale-[1.02]' : 'border-gray-700 bg-gray-800 hover:border-gray-600'}`;
+                    card.onclick = () => toggleSelection(item.id);
+                    card.innerHTML = `<h3 class="font-bold text-white mb-2">${item.title}</h3><p class="text-sm text-gray-400 leading-relaxed">${item.desc}</p>`;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error al renderizar el paso:", error);
             }
-            
-            document.getElementById('step-title').innerText = title;
-            document.getElementById('step-counter').innerText = `Paso ${currentStep} de 3`;
-            document.getElementById('step-instruction').innerText = instruction;
-            updateCounter();
-            
-            data.forEach(item => {
-                const currentSelections = getActiveArray();
-                const isSelected = currentSelections.includes(item.id);
-                const card = document.createElement('div');
-                card.className = `p-5 rounded-xl cursor-pointer border-2 transition-all duration-200 ${isSelected ? 'border-teal-400 bg-teal-900/30 transform scale-[1.02]' : 'border-gray-700 bg-gray-800 hover:border-gray-600'}`;
-                card.onclick = () => toggleSelection(item.id);
-                card.innerHTML = `<h3 class="font-bold text-white mb-2">${item.title}</h3><p class="text-sm text-gray-400 leading-relaxed">${item.desc}</p>`;
-                grid.appendChild(card);
-            });
         }
 
         function getActiveArray() {
@@ -251,7 +226,6 @@
             }
         }
 
-        // INTEGRACIÓN CON GEMINI & SUPABASE
         async function submitAndGenerate() {
             const email = document.getElementById('user-email').value;
             if (!email || !email.includes('@')) {
@@ -262,35 +236,28 @@
             document.getElementById('email-screen').classList.add('hidden');
             document.getElementById('loading-screen').classList.remove('hidden');
 
-            // 1. Extraer nombres textuales de la selección
             const selectedTalents = talentsData.filter(t => selections.talents.includes(t.id)).map(t => t.title).join(', ');
-            const selectedCauses = causesData.filter(c => selections.causes.includes(c.id)).map(c => t.title).join(', ');
-            const selectedModels = modelsData.filter(m => selections.models.includes(m.id)).map(m => t.title).join(', ');
+            const selectedCauses = causesData.filter(c => selections.causes.includes(c.id)).map(c => c.title).join(', ');
+            const selectedModels = modelsData.filter(m => selections.models.includes(m.id)).map(m => m.title).join(', ');
 
-            // 2. Guardar en Supabase (Silencioso)
             supabaseClient.from('respuestas_proposito').insert([{ 
                 email: email, 
                 respuestas_json: { talents: selectedTalents, causes: selectedCauses, models: selectedModels } 
             }]).then(() => console.log('Guardado DB')).catch(e => console.error(e));
 
-            // 3. Llamar a Gemini API
             const aiMarkdownText = await fetchGeminiInsight(selectedTalents, selectedCauses, selectedModels);
 
-            // 4. Mostrar Resultados
             document.getElementById('loading-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             
-            // Poblar UI resumen
             document.getElementById('res-talents').innerText = selectedTalents;
             document.getElementById('res-causes').innerText = selectedCauses;
             document.getElementById('res-models').innerText = selectedModels;
             
-            // Renderizar Markdown de Gemini a HTML
             document.getElementById('ai-response-container').innerHTML = marked.parse(aiMarkdownText);
         }
 
         async function fetchGeminiInsight(talents, causes, models) {
-            // PROMPT DEL SISTEMA PARA GEMINI
             const prompt = `Actúa como un experto consultor de Ikigai y negocios de Purpose Lab. 
             Tengo un cliente con estos datos:
             - Dones naturales: ${talents}
@@ -314,7 +281,7 @@
             2. [Paso 2]
             3. [Paso 3]
             
-            IMPORTANTE: Responde solo con el texto en Markdown, sin introducciones ni saludos. Sé profesional, directo y muy creativo en las ideas de negocio.`;
+            IMPORTANTE: Responde solo con el texto en Markdown, sin introducciones ni saludos. Sé profesional, directo y muy creativo.`;
 
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
@@ -322,29 +289,26 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { temperature: 0.7 } // Balance entre coherencia y creatividad
+                        generationConfig: { temperature: 0.7 }
                     })
                 });
 
                 const data = await response.json();
                 if (data.error) throw new Error(data.error.message);
-                
                 return data.candidates[0].content.parts[0].text;
-
             } catch (error) {
                 console.error("Error API Gemini:", error);
                 return "### Error de Generación\nHubo un problema contactando a la IA. Asegúrate de haber colocado la API Key válida en el código. Si ya lo hiciste, refresca e intenta de nuevo.";
             }
         }
 
-        // GENERADOR DE PDF
         function downloadPDF() {
             const element = document.getElementById('pdf-content');
             const opt = {
                 margin:       10,
                 filename:     'Purpose_Lab_Diagnostico.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, backgroundColor: '#111827' }, // Fondo oscuro para coincidir con la web
+                html2canvas:  { scale: 2, backgroundColor: '#111827' },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             
