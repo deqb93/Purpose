@@ -246,56 +246,71 @@
             const selectedCauses = causesData.filter(c => selections.causes.includes(c.id)).map(c => c.title).join(', ');
             const selectedModels = modelsData.filter(m => selections.models.includes(m.id)).map(m => m.title).join(', ');
 
-            fullAiResponse = await fetchGeminiInsight(selectedTalents, selectedCauses, selectedModels);
+            async function fetchGeminiInsight(talents, causes, models) {
+            const prompt = `Actúa implícitamente como un estratega de negocios disruptivo, copywriter de direct-response y mentor de alto rendimiento. No uses introducciones formales ni saludas, ve directo al valor.
 
-            let teaserText = "";
-            const purposeMatch = fullAiResponse.match(/###\s*Tu Propósito Definido[\s\S]*?\n([\s\S]*?)(?=###|$)/i);
-            
-            if (purposeMatch && purposeMatch[1] && !purposeMatch[1].includes("hubo un problema técnico")) {
-                teaserText = purposeMatch[1].trim();
-            } else if (fullAiResponse && !fullAiResponse.includes("hubo un problema técnico")) {
-                const parrafos = fullAiResponse.split('\n').filter(p => p.trim().length > 20 && !p.trim().startsWith('#'));
-                if (parrafos.length > 0) {
-                    teaserText = parrafos[0].trim();
-                }
+            Tengo un usuario con estas elecciones exactas:
+            - Sus talentos naturales: ${talents}
+            - Los problemas del mundo que le indignan: ${causes}
+            - Su modelo de entrega preferido: ${models}
+
+            Tu trabajo es entregar un diagnóstico fascinante, profundo y altamente personalizado. Evita frases cliché o respuestas genéricas y robóticas. Conecta los puntos de forma creativa.
+
+            Genera estrictamente la respuesta usando este formato en Markdown:
+
+            ### Tu Propósito Definido
+            [Escribe un párrafo potente, inspirador y revelador de 3 a 4 líneas que unifique de manera armónica sus talentos con el problema que quiere resolver y cómo lo monetizará. Debe sentirse como un "momento ajá" para el usuario, totalmente humano y magnético].
+
+            ### 3 Proyectos Mínimos Viables (MVP)
+            [Crea 3 ideas de negocio concretas, disruptivas y adaptadas a su modelo de trabajo. Para cada una incluye un nombre llamativo en negrita, en qué consiste exactamente la oferta y quién es el cliente específico que pagaría por ello].
+
+            ### Anclaje Estoico & Plan a 7 Días
+            **Lo que NO controlas:** [Un obstáculo mental o del mercado que debe soltar de inmediato].
+            **Lo que SÍ controlas:** [La palanca exacta de acción que depende 100% de él/ella].
+
+            **Plan de Acción:**
+            1. [La primera acción concreta y táctica para ejecutar hoy mismo]
+            2. [La segunda acción de validación o estructuración]
+            3. [La tercera acción para salir al mercado esta misma semana]
+
+            IMPORTANTE: Cero introducciones, cero explicaciones previas, solo el contenido en Markdown limpio.`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { 
+                            temperature: 0.85, // Subimos la temperatura para que sea más creativo y menos repetitivo
+                            topP: 0.95
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                if (data.error) throw new Error(data.error.message);
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error("Error contactando la IA:", error);
+                
+                return `### Tu Propósito Definido
+Convertir tu capacidad innata para ${talents.toLowerCase()} en el motor exacto para transformar el problema de ${causes.toLowerCase()}, construyendo un vehículo de alto valor a través de ${models.toLowerCase()} que impacte vidas y genere ingresos reales.
+
+### 3 Proyectos Mínimos Viables (MVP)
+1. **La Consultoría Quirúrgica:** Un programa intensivo de diagnóstico y acompañamiento rápido enfocado en sanar el dolor principal de tus clientes usando tu experiencia.
+2. **El Ecosistema de Contenido y Comunidad:** Un canal de autoridad donde desvelas los secretos de tu especialidad para atraer a tu tribu ideal de forma orgánico.
+3. **El Taller Intensivo de Fin de Semana:** Una experiencia transformadora en vivo donde llevas a un grupo reducido a resolver un problema crítico paso a paso.
+
+### Anclaje Estoico & Plan a 7 Días
+**Lo que NO controlas:** La validación externa o el qué dirán de los escépticos al inicio.
+**Lo que SÍ controlas:** La calidad de tu entrega y la frecuencia con la que muestras tu trabajo.
+
+**Plan de Acción:**
+1. Diseña una página de aterrizaje ultra simple de una sola sección con tu oferta.
+2. Escribe una lista de 20 personas en tu entorno que sufran el problema que resuelves.
+3. Envía una propuesta directa por mensaje privado a esos 20 prospectos invitándolos a tu fase beta.`;
             }
-            
-            if (!teaserText) {
-                const mainTalent = selectedTalents.split(',')[0].toLowerCase();
-                const mainCause = selectedCauses.split(',')[0].toLowerCase();
-                const mainModel = selectedModels.split(',')[0].toLowerCase();
-                teaserText = `Convertir tu habilidad natural para ${mainTalent} en una herramienta poderosa para reducir los problemas de ${mainCause}, entregando claridad y resultados reales a través de un formato de ${mainModel}.`; 
-            }
-
-            document.getElementById('loading-screen').classList.add('hidden');
-            document.getElementById('teaser-screen').classList.remove('hidden');
-            document.getElementById('teaser-content').innerText = `"${teaserText}"`;
-        }
-
-        function saveAndShowPDF() {
-            const email = document.getElementById('user-email').value;
-            if (!email || !email.includes('@')) {
-                alert('Ingresa un correo válido.');
-                return;
-            }
-
-            const selectedTalents = talentsData.filter(t => selections.talents.includes(t.id)).map(t => t.title).join(', ');
-            const selectedCauses = causesData.filter(c => selections.causes.includes(c.id)).map(c => c.title).join(', ');
-            const selectedModels = modelsData.filter(m => selections.models.includes(m.id)).map(m => m.title).join(', ');
-
-            supabaseClient.from('respuestas_proposito').insert([{ 
-                email: email, 
-                respuestas_json: { talents: selectedTalents, causes: selectedCauses, models: selectedModels } 
-            }]).then(() => console.log('Guardado exitoso')).catch(e => console.error(e));
-
-            document.getElementById('teaser-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            
-            document.getElementById('res-talents').innerText = selectedTalents;
-            document.getElementById('res-causes').innerText = selectedCauses;
-            document.getElementById('res-models').innerText = selectedModels;
-            
-            document.getElementById('ai-response-container').innerHTML = marked.parse(fullAiResponse);
         }
 
         async function fetchGeminiInsight(talents, causes, models) {
