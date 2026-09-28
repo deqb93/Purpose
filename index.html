@@ -260,9 +260,8 @@
                 }
             }
             
-            // Generador local inteligente de respaldo si la IA no devuelve texto válido
             if (!teaserText || teaserText.length < 30) {
-                teaserText = `Canalizar tu maestría natural para transformar la realidad de quienes sufren por ${selectedCauses.toLowerCase()}, construyendo un puente de alto impacto mediante ${selectedModels.toLowerCase()} que te posicione como referente y genere ingresos sostenibles.`;
+                teaserText = `Desarrollar soluciones a medida combinando tu habilidad para ${selectedTalents.toLowerCase()} y enfocarla en mitigar los efectos de ${selectedCauses.toLowerCase()}, entregando alto valor mediante ${selectedModels.toLowerCase()}.`;
             }
 
             document.getElementById('loading-screen').classList.add('hidden');
@@ -322,6 +321,7 @@ Usa exactamente este formato de Markdown:
 IMPORTANTE: Cero introducciones, responde solo con el contenido en Markdown limpio.`;
 
             try {
+                // Actualizado al endpoint estándar y estable de Google Generative Language
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -336,13 +336,18 @@ IMPORTANTE: Cero introducciones, responde solo con el contenido en Markdown limp
 
                 const data = await response.json();
                 if (data.error) throw new Error(data.error.message);
-                return data.candidates[0].content.parts[0].text;
-            } catch (error) {
-                console.error("Error contactando la IA:", error);
                 
-                // Respaldo de alta calidad garantizado si la API falla
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error("Respuesta vacía de la API");
+                }
+            } catch (error) {
+                console.error("Error en fetchGeminiInsight:", error);
+                
+                // Respaldo dinámico de alto nivel (Evita respuestas vacías o robóticas)
                 return `### Tu Propósito Definido
-Convertir tu capacidad innata en el motor exacto para transformar los desafíos de ${causes.toLowerCase()}, construyendo un vehículo de alto valor a través de ${models.toLowerCase()} que impacte vidas y genere ingresos reales y predecibles.
+Desarrollar productos digitales y brindar consultoría de alto valor integrando tus talentos para resolver los desafíos de ${causes.toLowerCase()}, creando soluciones sostenibles y rentables que impacten el mercado.
 
 ### 3 Proyectos Mínimos Viables (MVP)
 1. **La Consultoría Quirúrgica:** Un programa intensivo de diagnóstico y acompañamiento rápido enfocado en sanar el dolor principal de tus clientes usando tu experiencia.
