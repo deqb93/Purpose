@@ -261,7 +261,7 @@
             }
             
             if (!teaserText || teaserText.length < 30) {
-                teaserText = `Desarrollar soluciones a medida combinando tu habilidad para ${selectedTalents.toLowerCase()} y enfocarla en mitigar los efectos de ${selectedCauses.toLowerCase()}, entregando alto valor mediante ${selectedModels.toLowerCase()}.`;
+                teaserText = `Desarrollar soluciones innovadoras y brindar consultoría de alto valor aplicando tus dones para resolver ${selectedCauses.toLowerCase()}, generando un impacto sostenible a través de ${selectedModels.toLowerCase()}.`;
             }
 
             document.getElementById('loading-screen').classList.add('hidden');
@@ -321,8 +321,8 @@ Usa exactamente este formato de Markdown:
 IMPORTANTE: Cero introducciones, responde solo con el contenido en Markdown limpio.`;
 
             try {
-                // Actualizado al endpoint estándar y estable de Google Generative Language
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                // Actualizado al modelo vigente y estable de Google Gemini 2.5 Flash
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -345,9 +345,9 @@ IMPORTANTE: Cero introducciones, responde solo con el contenido en Markdown limp
             } catch (error) {
                 console.error("Error en fetchGeminiInsight:", error);
                 
-                // Respaldo dinámico de alto nivel (Evita respuestas vacías o robóticas)
+                // Respaldo dinámico optimizado
                 return `### Tu Propósito Definido
-Desarrollar productos digitales y brindar consultoría de alto valor integrando tus talentos para resolver los desafíos de ${causes.toLowerCase()}, creando soluciones sostenibles y rentables que impacten el mercado.
+Desarrollar productos digitales de alto impacto y brindar consultoría especializada para erradicar los cuellos de botella y la ineficiencia, creando soluciones tecnológicas que transformen la operación de tus clientes y generen ingresos recurrentes.
 
 ### 3 Proyectos Mínimos Viables (MVP)
 1. **La Consultoría Quirúrgica:** Un programa intensivo de diagnóstico y acompañamiento rápido enfocado en sanar el dolor principal de tus clientes usando tu experiencia.
