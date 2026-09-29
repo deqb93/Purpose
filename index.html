@@ -63,8 +63,8 @@
             <!-- Aquí se inyectará el propósito -->
         </div>
 
-        <h3 class="text-2xl font-bold text-white mb-3">¿Quieres ejemplos prácticos para aplicarlo?</h3>
-        <p class="text-gray-400 mb-6 max-w-xl mx-auto">Ingresa tu correo para descargar el reporte completo en PDF. Incluye 3 ejemplos de modelos de negocio rentables basados en este propósito y tu plan de acción para los próximos 7 días.</p>
+        <h3 class="text-2xl font-bold text-white mb-3">¿Quieres el mapa completo para aplicarlo?</h3>
+        <p class="text-gray-400 mb-6 max-w-xl mx-auto">Ingresa tu correo para descargar el reporte completo en PDF. Incluye la aplicación práctica de tu propósito, tus vehículos de impacto y tu brújula de acción a 7 días.</p>
         
         <div class="max-w-md mx-auto">
             <input type="email" id="user-email" placeholder="tu-correo@ejemplo.com" class="w-full p-4 rounded-lg bg-gray-900 text-white border border-gray-600 mb-4 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400">
@@ -80,24 +80,25 @@
             <div class="text-teal-400 font-bold tracking-widest text-sm border border-teal-400/30 px-3 py-1 rounded-full bg-teal-400/10">TU MAPA IKIGAI</div>
             <button onclick="downloadPDF()" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded border border-gray-500 text-sm flex items-center gap-2 transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                Descargar Reporte
+                Descargar Reporte en PDF
             </button>
         </div>
 
         <div id="pdf-content" class="bg-gray-800 rounded-2xl p-8 md:p-12 shadow-2xl border border-gray-700">
-            <h2 class="text-4xl font-extrabold text-white mb-6">Diagnóstico Purpose Lab</h2>
+            <h2 class="text-4xl font-extrabold text-white mb-2">Diagnóstico Purpose Lab</h2>
+            <p class="text-gray-400 text-sm mb-6">Plan estratégico personalizado de vocación y propósito.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
-                    <span class="text-xs text-gray-500 font-bold uppercase tracking-wider block mb-1">Tus Dones</span>
+                    <span class="text-xs text-teal-400 font-bold uppercase tracking-wider block mb-1">Tus Dones</span>
                     <p id="res-talents" class="text-sm text-gray-300"></p>
                 </div>
                 <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
-                    <span class="text-xs text-gray-500 font-bold uppercase tracking-wider block mb-1">Tus Causas</span>
+                    <span class="text-xs text-teal-400 font-bold uppercase tracking-wider block mb-1">Tus Causas</span>
                     <p id="res-causes" class="text-sm text-gray-300"></p>
                 </div>
                 <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
-                    <span class="text-xs text-gray-500 font-bold uppercase tracking-wider block mb-1">Tu Modelo</span>
+                    <span class="text-xs text-teal-400 font-bold uppercase tracking-wider block mb-1">Tu Modelo</span>
                     <p id="res-models" class="text-sm text-teal-400"></p>
                 </div>
             </div>
@@ -249,7 +250,7 @@
             fullAiResponse = await fetchGeminiInsight(selectedTalents, selectedCauses, selectedModels);
 
             let teaserText = "";
-            const purposeMatch = fullAiResponse.match(/###\s*Tu Propósito Definido[\s\S]*?\n([\s\S]*?)(?=###|$)/i);
+            const purposeMatch = fullAiResponse.match(/###\s*La Revelación de tu Dharma[\s\S]*?\n([\s\S]*?)(?=###|$)/i);
             
             if (purposeMatch && purposeMatch[1] && !purposeMatch[1].includes("hubo un problema técnico")) {
                 teaserText = purposeMatch[1].trim();
@@ -261,7 +262,7 @@
             }
             
             if (!teaserText || teaserText.length < 30) {
-                teaserText = `Desarrollar soluciones innovadoras y brindar consultoría de alto valor aplicando tus dones para resolver ${selectedCauses.toLowerCase()}, generando un impacto sostenible a través de ${selectedModels.toLowerCase()}.`;
+                teaserText = `Tus dones para ${selectedTalents.toLowerCase()} son el instrumento exacto para intervenir en ${selectedCauses.toLowerCase()}, convirtiendo tu intuición y habilidad en soluciones tangibles a través de ${selectedModels.toLowerCase()}.`;
             }
 
             document.getElementById('loading-screen').classList.add('hidden');
@@ -296,39 +297,37 @@
         }
 
         async function fetchGeminiInsight(talents, causes, models) {
-            const prompt = `Actúa como un estratega de negocios y mentor de alto rendimiento. Escribe un reporte profundo, inspirador y magnético en Markdown para alguien con estos datos:
-- Dones naturales: ${talents}
-- Problemas que quiere resolver: ${causes}
-- Modelo de trabajo preferido: ${models}
+            const prompt = `Actúa como un maestro en Logoterapia (búsqueda de sentido), filosofía existencial y arquitecto de vida. Estás guiando a un ser humano en una de las búsquedas más profundas e íntimas: encontrar su propósito vital y hacerlo viable en el mundo real.
 
-Usa exactamente este formato de Markdown:
+            Datos de su esencia:
+            - Sus dones naturales (Dharma): ${talents}
+            - El dolor del mundo que le indigna y desea sanar: ${causes}
+            - El vehículo a través del cual desea entregar su valor: ${models}
 
-### Tu Propósito Definido
-[Escribe un párrafo potente, profundo y revelador de 3 a 4 líneas que unifique de manera armónica sus dones con el problema que quiere resolver y cómo lo monetizará, sintiéndose como un momento ajá].
+            Tu tarea es escribir una revelación profundamente personal, empática y conmovedora. Prohibido usar respuestas de molde, plantillas rígidas, listas frías o lenguaje corporativo vacío. Háblale a su esencia. Conecta los puntos de forma que sienta que alguien finalmente "lo ve" y entiende su potencial.
 
-### 3 Proyectos Mínimos Viables (MVP)
-[Crea 3 ideas de negocio concretas, disruptivas y adaptadas a su modelo de trabajo. Para cada una incluye un nombre llamativo en negrita, en qué consiste exactamente la oferta y quién es el cliente específico que pagaría por ello].
+            Usa strictly este formato en Markdown:
 
-### Anclaje Estoico & Plan a 7 Días
-**Lo que NO controlas:** [Un obstáculo mental o del mercado que debe soltar de inmediato].
-**Lo que SÍ controlas:** [La palanca exacta de acción que depende 100% de él/ella].
+            ### La Revelación de tu Dharma
+            [Escribe 1 o 2 párrafos profundos. Analiza filosófica y psicológicamente por qué sus talentos específicos son exactamente el antídoto perfecto para el dolor que eligió. Hazle sentir que su combinación de habilidades no es casualidad, sino una vocación. Escribe con un tono inspirador, crudo y real.]
 
-**Plan de Acción:**
-1. [La primera acción concreta y táctica para ejecutar hoy mismo]
-2. [La segunda acción de validación o estructuración]
-3. [La tercera acción para salir al mercado esta misma semana]
+            ### Tu Vehículo de Impacto
+            [Explica cómo usar su modelo elegido (${models}) no solo como una forma de hacer dinero, sino como la extensión más natural de su ser. Da 2 ideas de aplicación MUY específicas, creativas, humanas y nada convencionales. Dales un nombre que resuene con el alma y explica cómo funcionarían en la vida real para ayudar a las personas.]
 
-IMPORTANTE: Cero introducciones, responde solo con el contenido en Markdown limpio.`;
+            ### Tu Brújula Estoica
+            **Lo que debes soltar hoy:** [Un miedo, creencia limitante o peso existencial muy específico que suele frenar a las personas con estos dones exactos. Sé muy preciso].
+            **Lo que debes abrazar:** [La acción diaria, íntima e innegociable que debe empezar a hacer hoy mismo para honrar su propósito, incluso si nadie lo está viendo].
+
+            IMPORTANTE: Escribe con empatía brutal, profundidad y sabiduría. No uses introducciones como "Aquí tienes tu reporte", entrega solo el texto en Markdown.`;
 
             try {
-                // Actualizado al modelo vigente y estable de Google Gemini 2.5 Flash
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: prompt }] }],
                         generationConfig: { 
-                            temperature: 0.85, 
+                            temperature: 0.9, 
                             topP: 0.95 
                         }
                     })
@@ -345,23 +344,17 @@ IMPORTANTE: Cero introducciones, responde solo con el contenido en Markdown limp
             } catch (error) {
                 console.error("Error en fetchGeminiInsight:", error);
                 
-                // Respaldo dinámico optimizado
-                return `### Tu Propósito Definido
-Desarrollar productos digitales de alto impacto y brindar consultoría especializada para erradicar los cuellos de botella y la ineficiencia, creando soluciones tecnológicas que transformen la operación de tus clientes y generen ingresos recurrentes.
+                return `### La Revelación de tu Dharma
+Tus dones naturales no son un accidente; son la herramienta exacta que necesitas para enfrentarte al dolor que has elegido mirar de frente. Mientras otros apartan la mirada, tú tienes la capacidad innata de aportar luz justo donde más hace falta. Tu propósito nace en la intersección exacta entre lo que se te da sin esfuerzo y lo que el mundo pide a gritos.
 
-### 3 Proyectos Mínimos Viables (MVP)
-1. **La Consultoría Quirúrgica:** Un programa intensivo de diagnóstico y acompañamiento rápido enfocado en sanar el dolor principal de tus clientes usando tu experiencia.
-2. **El Ecosistema de Contenido y Comunidad:** Un canal de autoridad donde desvelas los secretos de tu especialidad para atraer a tu tribu ideal de forma orgánica.
-3. **El Taller Intensivo de Fin de Semana:** Una experiencia transformadora en vivo donde llevas a un grupo reducido a resolver un problema crítico paso a paso.
+### Tu Vehículo de Impacto
+Tu modelo elegido es tu altavoz. Úsalo para crear espacios de transformación genuina:
+1. **El Refugio Práctico:** Un sistema donde tu talento se convierte en el puente para que otros dejen de sufrir por lo que te frustra.
+2. **La Arquitectura del Cambio:** Diseñar soluciones que trabajen en segundo plano, mejorando la vida de las personas sin que tengan que pedirlo.
 
-### Anclaje Estoico & Plan a 7 Días
-**Lo que NO controlas:** La validación externa o el qué dirán de los escépticos al inicio.
-**Lo que SÍ controlas:** La calidad de tu entrega y la frecuencia con la que muestras tu trabajo.
-
-**Plan de Acción:**
-1. Diseña una página de aterrizaje ultra simple de una sola sección con tu oferta.
-2. Escribe una lista de 20 personas en tu entorno que sufran el problema que resuelves.
-3. Envía una propuesta directa por mensaje privado a esos 20 prospectos invitándolos a tu fase beta.`;
+### Tu Brújula Estoica
+**Lo que debes soltar hoy:** La creencia de que tienes que salvar a todo el mundo al mismo tiempo.
+**Lo que debes abrazar:** La disciplina de empezar hoy, con una sola persona, usando lo que ya tienes en tus manos.`;
             }
         }
 
@@ -379,7 +372,7 @@ Desarrollar productos digitales de alto impacto y brindar consultoría especiali
             btn.innerText = "Generando PDF...";
             
             html2pdf().set(opt).from(element).save().then(() => {
-                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Descargar de Nuevo`;
+                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Descargar Reporte en PDF`;
             });
         }
     </script>
